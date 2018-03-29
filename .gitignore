@@ -1,0 +1,10 @@
+
+\.idea/libraries/
+
+\.idea/
+
+venv/Include/
+
+venv/Lib/
+
+venv/
