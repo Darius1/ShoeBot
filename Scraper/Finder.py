@@ -9,6 +9,8 @@ import bs4
 
 import requests
 
+import lxml
+
 import random
 
 import webbrowser
@@ -36,7 +38,7 @@ def create_url(model, size):
 
     return url
 
-
+# Testing the create_url method
 # model = input("Model # ")
 #
 # size = input("Size ")
@@ -46,6 +48,8 @@ def create_url(model, size):
 # print(new_url)
 
 # Base url: black ultraboosts in a size 6.5
+
+
 url = 'http://www.adidas.com/us/ultraboost-shoes/BB6166_580.html?forceSelSize=BB6166_580'
 
 print(url)
@@ -54,6 +58,11 @@ response = requests.get(url, headers=headers)
 
 # Get the webpage and ensure that it's correct by checking the webpage title
 
-webpage = bs4.BeautifulSoup(response.text, "html.parser")
+webpage = bs4.BeautifulSoup(response.text, 'html5lib')
 
 print(webpage.title.string)
+
+# Scrape the sizing information for the shoe
+# list_of_sizes = webpage.select("square_list___10v-P square_list___hsTpL")
+list_of_sizes = webpage.find("div", class_="col-s-12 col-1-8 col-hg-7 no-gutters")
+print(list_of_sizes)
