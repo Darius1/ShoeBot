@@ -9,11 +9,7 @@ import bs4
 
 import requests
 
-import lxml
-
-import random
-
-import webbrowser
+from selenium import webdriver
 
 
 def create_url(model, size):
