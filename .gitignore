@@ -18,3 +18,5 @@ checkout\.png
 geckodriver\.log
 
 Scraper/SeleniumExample\.py
+
+*.log

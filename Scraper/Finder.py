@@ -1,14 +1,3 @@
-# https://www.adidas.com/us/ultraboost-shoes/BB6165.html
-# http://www.adidas.com/us/ultraboost-shoes/BB6166_590.html?forceSelSize=BB6166_590
-# http://www.adidas.com/us/ultraboost-shoes/BB6166_610.html?forceSelSize=BB6166_610
-# https://www.adidas.com/us/ultraboost-shoes/BB6167.html
-
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:59.0) Gecko/20100101 Firefox/59.0'}
-
-import bs4
-
-import requests
-
 from selenium import webdriver
 
 import time
@@ -110,3 +99,57 @@ checkoutLinks = checkoutPopup.find_elements_by_tag_name('a')
 # Checkout is the second link, but if the page changes in the future will need to use the above for loop to find the
 # button
 checkoutLinks.__getitem__(1).click()
+
+# Wait for the checkout page to load
+time.sleep(1)
+
+# To use this method, I have to have the user's password which means I need to find a way to safely use and remove the
+# the password after it's used so it can't be stolen
+
+# Begin logging the user in for a faster checkout
+email = driver.find_element_by_xpath('//*[@id="dwfrm_login_username"]')
+
+email.send_keys('email@email.com')
+
+password = driver.find_element_by_xpath('//*[@id="dwfrm_login_password"]')
+
+# This is dangerous because I need a way to keep a user's password hidden
+password.send_keys('password')
+
+# Clicks the login button
+driver.find_element_by_xpath('/html/body/div[1]/div[3]/div/div/div/div/div[3]/div[2]/div[1]/div/form/fieldset/div[4]/button').click()
+
+# # The user provided invalid login credentials so the login warning banner was displayed
+# if driver.find_element_by_xpath('//*[@id="login-warning-alert"]').is_displayed():
+#     print('Invalid login')
+#     exit(0)
+
+# If user doesn't give login info.  Fill out the shipping information
+
+firstName = driver.find_element_by_xpath('//*[@id="dwfrm_shipping_shiptoaddress_shippingAddress_firstName"]')
+
+firstName.send_keys('first')
+
+lastName = driver.find_element_by_xpath('//*[@id="dwfrm_shipping_shiptoaddress_shippingAddress_lastName"]')
+
+lastName.send_keys('last')
+
+address = driver.find_element_by_xpath('//*[@id="dwfrm_shipping_shiptoaddress_shippingAddress_address1"]')
+
+address.send_keys('1234 fake address st')
+
+city = driver.find_element_by_xpath('//*[@id="dwfrm_shipping_shiptoaddress_shippingAddress_city"]')
+
+city.send_keys('city')
+
+driver.find_element_by_xpath('/html/body/div[1]/div[3]/div/div/div/div/div[2]/form/div[2]/ng-form/div[2]/div/div[6]/div[1]').click()
+
+stateList = driver.find_elements_by_xpath('/html/body/div[1]/div[3]/div/div/div/div/div[2]/form/div[2]/ng-form/div[2]/div/div[6]/div[1]/div[2]')
+
+
+for state in stateList:
+    if state.text == 'Montana':
+         driver.execute_script("arguments[0].className = 'materialize-select-option selected'", state)
+        break
+    else:
+        print(state.text)
