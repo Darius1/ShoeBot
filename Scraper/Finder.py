@@ -46,19 +46,47 @@ def create_url(model, size):
 # Base url: black ultraboosts in a size 6.5
 
 
+path = "C:\Python27\selenium\geckodriver"
+driver = webdriver.Firefox(path)
+
 url = 'http://www.adidas.com/us/ultraboost-shoes/BB6166_580.html?forceSelSize=BB6166_580'
+driver.get(url)
 
-print(url)
-# Get the information from the url
-response = requests.get(url, headers=headers)
+# Opens the size dropdown box and opens the list of all sizes
+sizeBox = driver.find_element_by_class_name('col-s-9')
+sizeBox.click()
 
-# Get the webpage and ensure that it's correct by checking the webpage title
+# Finds all of the ordered list items on the page which includes all of the shoe sizes
+sizeList = sizeBox.find_elements_by_tag_name('li')
 
-webpage = bs4.BeautifulSoup(response.text, 'html5lib')
+# Prints all of the shoe sizes
+for i in sizeList:
+    # ignores unneeded white space
+    if i.text != '':
+        print(i.text)
 
-print(webpage.title.string)
+    # This code will be used to click on the user's desired shoe size
+    # 7 is just a placeholder size
+    if i.text == '7':
+        i.click()
 
-# Scrape the sizing information for the shoe
-# list_of_sizes = webpage.select("square_list___10v-P square_list___hsTpL")
-list_of_sizes = webpage.find("div", class_="col-s-12 col-1-8 col-hg-7 no-gutters")
-print(list_of_sizes)
+        # Need to click on the dropdown box again so that the page can be scraped again
+        # Might not need this since this box covers up the add to bag link
+        # driver.find_element_by_class_name('col-s-9').click()
+        break
+
+# Add the shoe to the user's cart
+driver.find_element_by_xpath('/html/body/div[1]/div/div[1]/div[2]/div/div[3]/div/div/div[2]/div/div[2]/div/div[5]/form/div[4]/button').click()
+
+checkoutPopup = driver.find_element_by_xpath('/html/body/div[2]/div[4]')
+
+# driver.find_element_by_xpath('/html/body/div[2]/div[4]/div[2]/main').find_element_by_tag_name('a')
+
+# checkoutLink = driver.find_element_by_class_name('col-1-10').find_element_by_tag_name('a')
+#
+# for link in checkoutLink:
+#     print(link)
+# Display the cost of the shoe
+
+# Begin the checkout process
+# driver.find_element_by_xpath('/html/body/div[2]/div[4]/div[2]/main/div/div/div/div[1]/div[3]/div/a[2]').click()

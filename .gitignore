@@ -8,3 +8,13 @@ venv/Include/
 venv/Lib/
 
 venv/
+
+adidas\.png
+
+adidas2\.png
+
+checkout\.png
+
+geckodriver\.log
+
+Scraper/SeleniumExample\.py
