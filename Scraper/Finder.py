@@ -11,6 +11,8 @@ import requests
 
 from selenium import webdriver
 
+import time
+
 
 def create_url(model, size):
     # Set the lowest shoe size to look at to be a Men's size 6.5
@@ -59,6 +61,9 @@ sizeBox.click()
 # Finds all of the ordered list items on the page which includes all of the shoe sizes
 sizeList = sizeBox.find_elements_by_tag_name('li')
 
+# Boolean associated with shoe size availability
+isAvailable = False
+
 # Prints all of the shoe sizes
 for i in sizeList:
     # ignores unneeded white space
@@ -68,25 +73,40 @@ for i in sizeList:
     # This code will be used to click on the user's desired shoe size
     # 7 is just a placeholder size
     if i.text == '7':
+        isAvailable = True
         i.click()
 
-        # Need to click on the dropdown box again so that the page can be scraped again
-        # Might not need this since this box covers up the add to bag link
-        # driver.find_element_by_class_name('col-s-9').click()
+        # Once the size is selected don't need to continue to search
         break
+
+if not isAvailable:
+    print('The size you have selected is unavailable.')
+    exit(0)
+
 
 # Add the shoe to the user's cart
 driver.find_element_by_xpath('/html/body/div[1]/div/div[1]/div[2]/div/div[3]/div/div/div[2]/div/div[2]/div/div[5]/form/div[4]/button').click()
 
-checkoutPopup = driver.find_element_by_xpath('/html/body/div[2]/div[4]')
+# Need this delay to give the page enough time to load the checkout overlay
+time.sleep(1)
 
-# driver.find_element_by_xpath('/html/body/div[2]/div[4]/div[2]/main').find_element_by_tag_name('a')
+checkoutPopup = driver.find_element_by_xpath('/html/body/div[2]/div[4]/div[2]/main')
 
-# checkoutLink = driver.find_element_by_class_name('col-1-10').find_element_by_tag_name('a')
-#
-# for link in checkoutLink:
-#     print(link)
-# Display the cost of the shoe
+if checkoutPopup.is_displayed():
+    print('displayed')
+else:
+    print('invisible')
 
-# Begin the checkout process
-# driver.find_element_by_xpath('/html/body/div[2]/div[4]/div[2]/main/div/div/div/div[1]/div[3]/div/a[2]').click()
+# Finds all of the links on the checkout overlay
+# Options: View Bag and Checkout
+checkoutLinks = checkoutPopup.find_elements_by_tag_name('a')
+
+# Searches all of the links in the overlay for the checkout option
+# for link in checkoutLinks:
+#     if link.text == 'CHECKOUT':
+#         link.click()
+#     print(link.text)
+
+# Checkout is the second link, but if the page changes in the future will need to use the above for loop to find the
+# button
+checkoutLinks.__getitem__(1).click()
